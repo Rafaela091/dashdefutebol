@@ -1,0 +1,481 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brasileirão Analytics Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="logo">
+        <h1>⚽ BRA Analytics</h1>
+        <p>Série A · carregando...</p>
+      </div>
+      <div class="nav">
+        <div class="nav-section">Análises</div>
+        <button class="nav-item active" data-section="overview" onclick="showSection('overview')" tabindex="0" aria-current="page">
+          <span class="icon">📊</span><span>Visão Geral</span>
+        </button>
+        <button class="nav-item" data-section="home_adv" onclick="showSection('home_adv')" tabindex="0">
+          <span class="icon">🏠</span><span>Vantagem Casa</span>
+        </button>
+        <button class="nav-item" data-section="hist_perf" onclick="showSection('hist_perf')" tabindex="0">
+          <span class="icon">📈</span><span>Desempenho Histórico</span>
+        </button>
+        <button class="nav-item" data-section="goals" onclick="showSection('goals')" tabindex="0">
+          <span class="icon">🥅</span><span>Gols por Time</span>
+        </button>
+        <button class="nav-item" data-section="cards" onclick="showSection('cards')" tabindex="0">
+          <span class="icon">🟨</span><span>Times Violentos</span>
+        </button>
+        <button class="nav-item" data-section="players" onclick="showSection('players')" tabindex="0">
+          <span class="icon">👤</span><span>Estatísticas Jogadores</span>
+        </button>
+      </div>
+      <div class="sidebar-footer">
+        <p>Fonte: <strong>DW Brasileirão</strong></p>
+        <p style="margin-top:4px;">Carregando partidas...</p>
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- ===== OVERVIEW ===== -->
+      <section id="overview" class="section active">
+        <div class="page-header">
+          <div class="breadcrumb">Dashboard / <span>Visão Geral</span></div>
+          <h2>Visão Geral — Brasileirão Série A</h2>
+          <p>Carregando métricas reais...</p>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Total de Partidas</div>
+            <div class="kpi-value blue">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total de Gols</div>
+            <div class="kpi-value green">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Vitórias em Casa</div>
+            <div class="kpi-value yellow">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Clubes Analisados</div>
+            <div class="kpi-value" style="color:var(--purple)">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+        </div>
+
+        <div class="chart-grid thirds">
+          <div class="chart-card">
+            <div class="chart-title">Gols por Temporada</div>
+            <div class="chart-subtitle">Casa vs Visitante</div>
+            <div class="legend">
+              <div class="legend-item"><span class="legend-dot" style="background:#1db954"></span> Casa</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#3a8bd0"></span> Visitante</div>
+            </div>
+            <div class="chart-wrap" style="height:220px">
+              <canvas id="goalsSeasonChart" role="img" aria-label="Gráfico de gols por temporada">Gols por
+                temporada.</canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Tipo de Resultado</div>
+            <div class="chart-subtitle">Distribuição de vitórias</div>
+            <div class="donut-wrap" style="margin-top:16px">
+              <div class="donut-canvas">
+                <canvas id="resultDonut" role="img" aria-label="Distribuição de resultados">Distribuicao de
+                  resultados.</canvas>
+              </div>
+              <div class="donut-legend">
+                <div style="margin-bottom:10px">
+                  <div style="font-size:20px;font-weight:700;color:var(--green)">-</div>
+                  <div style="font-size:12px;color:var(--text3)">🏠 Vitória Casa</div>
+                </div>
+                <div style="margin-bottom:10px">
+                  <div style="font-size:20px;font-weight:700;color:var(--yellow)">-</div>
+                  <div style="font-size:12px;color:var(--text3)">🤝 Empate</div>
+                </div>
+                <div>
+                  <div style="font-size:20px;font-weight:700;color:var(--blue)">-</div>
+                  <div style="font-size:12px;color:var(--text3)">✈️ Vitória Visita</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Top 10 Times — Pontos Históricos</div>
+            <div class="chart-subtitle">Total de pontos acumulados</div>
+            <div class="chart-wrap" style="height:280px">
+              <canvas id="histPtsChart" role="img" aria-label="Pontos históricos por time">Pontos acumulados por
+                time.</canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Tipo de Gol</div>
+            <div class="chart-subtitle">Normal · Pênalti · Contra</div>
+            <div class="chart-wrap" style="height:200px;margin-top:20px">
+              <canvas id="goalTypeChart" role="img" aria-label="Gols por tipo">Gols por tipo.</canvas>
+            </div>
+            <div style="margin-top:16px">
+              <div class="score-bar-wrap">
+                <div class="score-bar-label"><span>Normal</span><span>-</span></div>
+                <div class="score-bar-track">
+                  <div class="score-bar-fill animated" style="width:0%;background:var(--green)"></div>
+                </div>
+              </div>
+              <div class="score-bar-wrap">
+                <div class="score-bar-label"><span>Pênalti</span><span>-</span></div>
+                <div class="score-bar-track">
+                  <div class="score-bar-fill animated" style="width:0%;background:var(--yellow)"></div>
+                </div>
+              </div>
+              <div class="score-bar-wrap">
+                <div class="score-bar-label"><span>Gol Contra</span><span>-</span></div>
+                <div class="score-bar-track">
+                  <div class="score-bar-fill animated" style="width:0%;background:var(--red)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== HOME ADVANTAGE ===== -->
+      <section id="home_adv" class="section">
+        <div class="page-header">
+          <div class="breadcrumb">Dashboard / <span>Vantagem de Jogar em Casa</span></div>
+          <h2>Vantagem de Jogar em Casa</h2>
+          <p>Análise de como o mando de campo impacta os resultados no Brasileirão</p>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Win Rate Casa</div>
+            <div class="kpi-value green">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Win Rate Visitante</div>
+            <div class="kpi-value blue">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Média Gols Casa</div>
+            <div class="kpi-value yellow">-</div>
+            <div class="kpi-sub">por partida</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Média Gols Visitante</div>
+            <div class="kpi-value red">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">% Vitória em Casa vs Fora — Por Time</div>
+            <div class="chart-subtitle">Comparação da taxa de vitórias mandante vs visitante</div>
+            <div class="legend">
+              <div class="legend-item"><span class="legend-dot" style="background:#1db954"></span> Casa</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#3a8bd0;border-style:dashed"></span>
+                Visitante</div>
+            </div>
+            <div class="chart-wrap" style="height:300px">
+              <canvas id="homeAdvChart" role="img" aria-label="Win rate casa vs visitante por time">Win rate por
+                time.</canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Média de Gols por Mando</div>
+            <div class="chart-subtitle">Casa vs Visitante por time</div>
+            <div class="chart-wrap" style="height:300px">
+              <canvas id="homeGoalsChart" role="img" aria-label="Média de gols casa vs visitante">Gols médios por
+                mando.</canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Consolidado — Vantagem de Jogar em Casa</div>
+          <div class="chart-subtitle">Comparação geral: casa vs visitante</div>
+          <div class="table-scroll">
+            <table class="data-table" style="margin-top:8px">
+              <thead>
+                <tr>
+                  <th>Métrica</th>
+                  <th class="num">Casa</th>
+                  <th class="num">Visitante</th>
+                  <th class="num">Diferença</th>
+                  <th>Vantagem</th>
+                </tr>
+              </thead>
+              <tbody id="homeAdvTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== HISTÓRICO ===== -->
+      <section id="hist_perf" class="section">
+        <div class="page-header">
+          <div class="breadcrumb">Dashboard / <span>Desempenho Histórico</span></div>
+          <h2>Desempenho Histórico dos Times</h2>
+          <p>Ranking consolidado de 17 temporadas do Brasileirão Série A</p>
+        </div>
+
+        <div class="filter-row">
+          <span class="filter-label">Ordenar por:</span>
+          <button class="filter-btn active" onclick="sortHistTable('pts', this)">Pontos</button>
+          <button class="filter-btn" onclick="sortHistTable('wins', this)">Vitórias</button>
+          <button class="filter-btn" onclick="sortHistTable('gf', this)">Gols Feitos</button>
+          <button class="filter-btn" onclick="sortHistTable('gd', this)">Saldo</button>
+          <button class="filter-btn" onclick="sortHistTable('win_pct', this)">% Aproveit.</button>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title" id="histPrimaryTitle">Pontos Acumulados — Top 10</div>
+            <div class="chart-subtitle" id="histPrimarySubtitle">Periodo analisado</div>
+            <div class="chart-wrap" style="height:280px">
+              <canvas id="histPtsChart2" role="img" aria-label="Pontos acumulados top 10">Pontos históricos.</canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title" id="histSecondaryTitle">Aproveitamento Geral (%)</div>
+            <div class="chart-subtitle" id="histSecondarySubtitle">% de pontos conquistados</div>
+            <div class="chart-wrap" style="height:280px">
+              <canvas id="histWinPctChart" role="img" aria-label="Aproveitamento por time">Aproveitamento dos
+                times.</canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card" style="margin-top:0">
+          <div class="chart-title">Tabela Histórica Completa</div>
+          <div class="chart-subtitle">Estatisticas acumuladas</div>
+          <div class="table-scroll">
+            <table class="data-table" style="margin-top:10px">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Time</th>
+                  <th class="num">Pts</th>
+                  <th class="num">J</th>
+                  <th class="num">V</th>
+                  <th class="num">E</th>
+                  <th class="num">D</th>
+                  <th class="num">GF</th>
+                  <th class="num">GA</th>
+                  <th class="num">SG</th>
+                  <th class="num">Aprov%</th>
+                </tr>
+              </thead>
+              <tbody id="histTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== GOLS ===== -->
+      <section id="goals" class="section">
+        <div class="page-header">
+          <div class="breadcrumb">Dashboard / <span>Times que Mais Fizeram Gols</span></div>
+          <h2>Times que Mais Fizeram Gols</h2>
+          <p>Ranking ofensivo dos clubes</p>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Maior Artilheiro</div>
+            <div class="kpi-value green" style="font-size:20px">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Maior Média/Jogo</div>
+            <div class="kpi-value yellow">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total de Gols</div>
+            <div class="kpi-value blue">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Média do Campeonato</div>
+            <div class="kpi-value" style="color:var(--purple)">-</div>
+            <div class="kpi-sub">gols por jogo</div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Top 12 Times — Total de Gols</div>
+            <div class="chart-subtitle">Gols acumulados</div>
+            <div class="chart-wrap" style="height:300px">
+              <canvas id="goalsRankChart" role="img" aria-label="Ranking de gols por time">Gols por time.</canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Média de Gols por Jogo</div>
+            <div class="chart-subtitle">Eficiência ofensiva por time</div>
+            <div class="chart-wrap" style="height:300px">
+              <canvas id="goalsAvgChart" role="img" aria-label="Média de gols por jogo">Gols por jogo.</canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Ranking de Artilharia — Times</div>
+          <table class="data-table" style="margin-top:10px">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Time</th>
+                <th class="num">Gols</th>
+                <th class="num">Jogos</th>
+                <th class="num">Média/Jogo</th>
+                <th>Barra</th>
+              </tr>
+            </thead>
+            <tbody id="goalsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== CARTÕES ===== -->
+      <section id="cards" class="section">
+        <div class="page-header">
+          <div class="breadcrumb">Dashboard / <span>Times Mais Violentos</span></div>
+          <h2>Times Mais Violentos</h2>
+          <p>Cartões amarelos e vermelhos acumulados</p>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Mais Cartões (Total)</div>
+            <div class="kpi-value red" style="font-size:20px">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Mais Agressivo/Jogo</div>
+            <div class="kpi-value red">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Mais Vermelhos</div>
+            <div class="kpi-value" style="color:var(--red)">-</div>
+            <div class="kpi-sub">Carregando...</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Menos Violento</div>
+            <div class="kpi-value green" style="font-size:18px">-</div>
+            <div class="kpi-sub">Menor índice de agressão</div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Cartões Amarelos vs Vermelhos — Top 12</div>
+            <div class="chart-subtitle">Acumulado no periodo</div>
+            <div class="legend">
+              <div class="legend-item"><span class="legend-dot" style="background:#f0b429"></span> Amarelo</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#e05252"></span> Vermelho</div>
+            </div>
+            <div class="chart-wrap" style="height:300px">
+              <canvas id="cardsChart" role="img" aria-label="Cartões por time">Cartões por time.</canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Cartões por Partida</div>
+            <div class="chart-subtitle">Índice de agressividade</div>
+            <div class="chart-wrap" style="height:300px">
+              <canvas id="cardsPerMatchChart" role="img" aria-label="Cartões por partida">Cartões por partida.</canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Ranking — Times Mais Violentos</div>
+          <table class="data-table" style="margin-top:10px">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Time</th>
+                <th class="num">🟨 Amarelos</th>
+                <th class="num">🟥 Vermelhos</th>
+                <th class="num">Total</th>
+                <th class="num">Por Jogo</th>
+                <th>Violência</th>
+              </tr>
+            </thead>
+            <tbody id="cardsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== JOGADORES ===== -->
+      <section id="players" class="section">
+        <div class="page-header">
+          <div class="breadcrumb">Dashboard / <span>Estatísticas de Jogadores</span></div>
+          <h2>Estatísticas de Jogadores</h2>
+          <p>Dados de atletas registrados no DW Brasileirão · Clique em um jogador para detalhes</p>
+        </div>
+
+        <div class="filter-row">
+          <span class="filter-label">Filtrar por:</span>
+          <select class="filter-select" id="seasonFilter" onchange="applyFilters()" aria-label="Filtrar por temporada">
+            <option value="">Todas as Temporadas</option>
+          </select>
+          <select class="filter-select" id="teamFilter" onchange="applyFilters()" aria-label="Filtrar por time">
+            <option value="">Todos os Times</option>
+          </select>
+          <input type="text" class="filter-select" id="playerSearch" placeholder="Buscar jogador..." oninput="applyFilters()" aria-label="Buscar jogador" style="padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-size: 12px; outline: none;" />
+        </div>
+
+        <div class="player-grid" id="playerGrid"></div>
+
+        <div class="detail-panel" id="playerDetail" style="display:none">
+          <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px" id="detailName"></div>
+          <div class="detail-grid" id="detailStats"></div>
+          <div style="margin-top:16px">
+            <div class="chart-wrap" style="height:200px">
+              <canvas id="playerRadar" role="img" aria-label="Radar de estatísticas do jogador">Radar de
+                desempenho.</canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card" style="margin-top:16px">
+          <div class="chart-title">Comparativo — Top Artilheiros</div>
+          <div class="chart-subtitle">Gols e Assistências acumuladas</div>
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="playerBarChart" role="img" aria-label="Gols e assistências por jogador">Artilheiros.</canvas>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="dados_reais.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
